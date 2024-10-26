@@ -1,0 +1,39 @@
+name: Build
+
+
+on:
+  push:
+    branches:
+    - 'api2'
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    -
+      name : Checkout
+      uses : actions/checkout@v4
+    -
+      name : Configure SSH
+      run  : |
+        mkdir  -p  ~/.ssh/
+        echo  "$SSH_KEY"  >~/.ssh/api2.key
+        chmod  600  ~/.ssh/api2.key
+        cat  >>~/.ssh/config <<END
+        Host api2
+          HostName api2.smoo.it
+          User $SSH_USER
+          IdentityFile ~/.ssh/api2.key
+          StrictHostKeyChecking no
+        END
+      env:
+        SSH_USER : ${{ secrets.API2_SSH_USER }}
+        SSH_KEY  : ${{ secrets.API2_SSH_KEY  }}
+    -
+       name : Test
+       run  : ssh api2 'cd api2.smoo.it/ && ls -lah'
