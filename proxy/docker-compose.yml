@@ -1,0 +1,30 @@
+version: "3.7"
+
+x-logging: &logging
+  driver: gcplogs
+  options:
+    gcp-project: smoo-api
+    gcp-meta-zone: us-east1
+    gcp-meta-name: traefik
+    mode: non-blocking
+
+networks:
+  default:
+    external: false
+    name: traefik
+
+services:
+  traefik:
+    image: traefik:1.7.34-alpine
+    logging: *logging
+    restart: unless-stopped
+    ports:
+    - 80:80
+    - 443:443
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - ./traefik.toml:/traefik.toml:ro
+    - ./letsencrypt/:/letsencrypt/
+    #labels:
+    #- traefik.frontend.rule=Host:proxy.api2.smoo.it
+    #- traefik.port=12345

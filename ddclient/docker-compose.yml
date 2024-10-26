@@ -1,0 +1,21 @@
+version: "3.7"
+
+x-logging: &logging
+  driver: gcplogs
+  options:
+    gcp-project: smoo-api
+    gcp-meta-zone: us-east1
+    gcp-meta-name: ddclient
+    mode: non-blocking
+
+services:
+  ddclient:
+    image: ghcr.io/linuxserver/ddclient:3.11.2
+    logging: *logging
+    environment:
+    - PUID=1000
+    - GUID=1000
+    - TZ=Etc/UTC
+    volumes:
+    - ./config/:/config/
+    restart: unless-stopped

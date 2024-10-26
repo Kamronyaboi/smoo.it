@@ -1,0 +1,43 @@
+defaultEntryPoints = [ "http", "https" ]
+
+[entryPoints]
+  [entryPoints.traefik]
+    address = ":12345"
+  [entryPoints.http]
+    address = ":80"
+    [entryPoints.http.forwardedHeaders]
+      trustedIPs = ["127.0.0.1/32", "192.168.0.0/16", "172.16.0.0/12", "10.0.0.0/8"]
+    [entryPoints.http.headers.customrequestheaders]
+      X-Forwarded-Proto = "http"
+      X-Forwarded-Ssl   = "off"
+  [entryPoints.https]
+    address = ":443"
+    [entryPoints.https.forwardedHeaders]
+      trustedIPs = ["127.0.0.1/32", "192.168.0.0/16", "172.16.0.0/12", "10.0.0.0/8"]
+    [entryPoints.https.headers.customrequestheaders]
+      X-Forwarded-Proto = "https"
+      X-Forwarded-Ssl   = "on"
+    [entryPoints.https.tls]
+
+[acme]
+  email       = "<redacted>"
+  storage     = "/letsencrypt/acme.json"
+  entryPoint  = "https"
+  acmeLogging = true
+  onDemand    = false
+  [acme.httpChallenge]
+    entryPoint = "http"
+  [[acme.domains]]
+    main = "api2.smoo.it"
+  [[acme.domains]]
+    main = "api2-smoo-it.spdns.de"
+
+[api]
+  entrypoint = "traefik"
+  dashboard  = true
+
+[docker]
+  endpoint = "unix:///var/run/docker.sock"
+  domain   = "smoo.it"
+  network  = "traefik"
+  watch    = true
