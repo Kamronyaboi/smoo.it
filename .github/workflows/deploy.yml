@@ -35,8 +35,18 @@ jobs:
         SSH_USER : ${{ secrets.API2_SSH_USER }}
         SSH_KEY  : ${{ secrets.API2_SSH_KEY  }}
     -
-      name : Deploy
+      name : Git pull
       run  : |
         ssh api2 'cd api2.smoo.it/ && git restore docker-compose.yml && git pull'
+    -
+      name : Copy docker-compose.yml
+      run  : |
         scp ./docker-compose.yml api2:~/api2.smoo.it/docker-compose.yml
-        ssh api2 'cd api2.smoo.it/ && docker compose build && docker compose up -d'
+    -
+      name : Build
+      run  : |
+        ssh api2 'cd api2.smoo.it/ && docker compose build'
+    -
+      name : Deploy
+      run  : |
+        ssh api2 'cd api2.smoo.it/ && docker compose up -d'
