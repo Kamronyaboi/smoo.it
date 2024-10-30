@@ -28,6 +28,8 @@ defaultEntryPoints = [ "http", "https" ]
   [acme.httpChallenge]
     entryPoint = "http"
   [[acme.domains]]
+    main = "api.smoo.it"
+  [[acme.domains]]
     main = "api2.smoo.it"
   [[acme.domains]]
     main = "api2-smoo-it.spdns.de"
