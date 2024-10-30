@@ -26,7 +26,7 @@ services:
       default:
       traefik:
     labels:
-    - traefik.frontend.rule=Host:api2.smoo.it
+    - traefik.frontend.rule=Host:api2.smoo.it,api.smoo.it
     - traefik.port=80
     environment:
       # public servers (from Discord)
